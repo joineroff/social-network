@@ -1,0 +1,19 @@
+debug: false
+app_name: social-network
+app_env: dev
+
+http:
+  port: 80
+  domain:
+
+mysql:
+  host: dbhost
+  port: 3306
+  user: dbuser
+  password: dbpass
+  database: appdb
+
+auth:
+  token-secret: my-app-secret
+  accessTTL: 1h
+  refresTTL: 30h

@@ -1,0 +1,70 @@
+{{ define "home/index.tmpl" }}
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        {{ template "globals/styles.tmpl" .}}
+        <title>Social Network</title>
+        </head>
+    <body>
+        {{ template "globals/header.tmpl" .}}
+
+        <div class="container">
+            <h1>Welcome,{{ .firstName }} {{ .lastName }}!</h1>
+            <hr>
+
+            <div class="card mb-2">
+            <div class="card-body mx-2">
+                <div class="mb-3 row">
+                    <label for="login" class="col-sm-4 col-form-label bg-secondary text-white">Login</label>
+                    <div class="col-sm-8">
+                        <input type="text" readonly class="form-control-plaintext bg-light px-3" id="login" value="{{.login}}">
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <label for="firstName" class="col-sm-4 col-form-label bg-secondary text-white">First Name</label>
+                    <div class="col-sm-8">
+                        <input type="text" readonly class="form-control-plaintext bg-light px-3" id="firstName" value="{{.firstName}}">
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <label for="lastName" class="col-sm-4 col-form-label bg-secondary text-white">Last Name</label>
+                    <div class="col-sm-8">
+                        <input type="text" readonly class="form-control-plaintext bg-light px-3" id="lastName" value="{{.lastName}}">
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <label for="city" class="col-sm-4 col-form-label bg-secondary text-white">City</label>
+                    <div class="col-sm-8">
+                        <input type="text" readonly class="form-control-plaintext bg-light px-3" id="city" value="{{.city}}">
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <label for="intersts" class="col-sm-4 col-form-label bg-secondary text-white">Interests</label>
+                    <div class="col-sm-8">
+                        <input type="text" readonly class="form-control-plaintext bg-light px-3" id="interests" value="{{.interests}}">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <label for="gender" class="col-sm-4 col-form-label bg-secondary text-white">Gender</label>
+                    <div class="col-sm-8">
+                        <input type="text" readonly class="form-control-plaintext bg-light px-3" id="gender" value="{{.gender}}">
+                    </div>
+                </div>
+            </div>
+            </div>
+        </div>
+
+
+        {{ template "globals/footer.tmpl" .}}
+        {{ template "globals/scripts.tmpl" .}}
+
+    </body>
+{{ end }}
