@@ -1,0 +1,62 @@
+{{ define "globals/header.tmpl" }}
+<header>
+    <div class="px-3 py-2 bg-dark text-white">
+      <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+          <a href="/" class="d-flex align-items-center my-2 my-lg-0 me-lg-auto text-white text-decoration-none">
+            <i class="bi bi-person-bounding-box px-1" style="font-size: 2rem; color: cornflowerblue;"></i>
+            SocialNetwork
+          </a>
+
+          <ul class="nav col-12 col-lg-auto my-2 justify-content-center my-md-0 text-small">
+            <!--
+            <li>
+              <a href="/" class="nav-link text-secondary">
+                <i class="bi bi-house" style="font-size: 1.5rem; color: cornflowerblue;"></i>
+                Home
+              </a>
+            </li>
+            <li>
+              <a href="/" class="nav-link text-white">
+                <i class="bi bi-speedometer2" style="font-size: 1.5rem; color: cornflowerblue;"></i>
+                Dashboard
+              </a>
+            </li>
+            <li>
+              <a href="#" class="nav-link text-white">
+                <i class="bi bi-table" style="font-size: 1.5rem; color: cornflowerblue;"></i>
+                Orders
+              </a>
+            </li>
+            <li>
+              <a href="#" class="nav-link text-white">
+                <i class="bi bi-grid" style="font-size: 1.5rem; color: cornflowerblue;"></i>
+                Products
+              </a>
+            </li>
+            <li>
+              <a href="#" class="nav-link text-white">
+                <i class="bi bi-person-circle" style="font-size: 1.5rem; color: cornflowerblue;"></i>
+                Customers
+              </a>
+            </li>
+            -->
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="px-3 py-2 border-bottom mb-3">
+      <div class="container d-flex flex-wrap justify-content-center">
+        <form method="GET" action="/search" class="col-12 col-lg-auto mb-2 mb-lg-0 me-lg-auto">
+          <input type="search" class="form-control" placeholder="Search..." aria-label="Search" name="q"
+          value="{{.searchQuery}}">
+        </form>
+
+        <div class="text-end">
+          <a href="/sign-out" class="btn btn-light text-dark me-2">SignOut</a>
+
+        </div>
+      </div>
+    </div>
+  </header>
+{{ end }}

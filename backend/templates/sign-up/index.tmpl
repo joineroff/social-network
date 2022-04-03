@@ -1,0 +1,116 @@
+{{ define "sign-up/index.tmpl" }}
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    {{ template "globals/styles.tmpl" .}}
+    <style>
+        body {
+          display: flex;
+          align-items: center;
+          padding-top: 40px;
+          padding-bottom: 40px;
+          background-color: #f5f5f5;
+        }
+
+        .form-signin {
+          width: 100%;
+          max-width: 330px;
+          padding: 15px;
+          margin: auto;
+        }
+
+        .form-signin .checkbox {
+          font-weight: 400;
+        }
+
+        .form-signin .form-floating:focus-within {
+          z-index: 2;
+        }
+
+        .form-signin input[type="email"] {
+          margin-bottom: -1px;
+          border-bottom-right-radius: 0;
+          border-bottom-left-radius: 0;
+        }
+
+        .form-signin input[type="password"] {
+          margin-bottom: 10px;
+          border-top-left-radius: 0;
+          border-top-right-radius: 0;
+        }
+    </style>
+
+
+    <title>Social Network - Sign Up</title>
+  </head>
+  <body class="text-center">
+
+    <main class="form-signin">
+      <form method="POST">
+        <div class="form-floating">
+            <i class="bi bi-person-bounding-box" style="font-size: 2rem; color: cornflowerblue;"></i>
+            SocialNetwork
+        </div>
+
+        <h1 class="h3 mb-3 fw-normal">Please sign up</h1>
+
+        {{ if .error }}
+        <div class="form-floating">
+            <p class="lead text-danger">{{ .error }}</p>
+        </div>
+        {{ end }}
+
+        <div class="form-floating">
+          <input type="login" class="form-control" id="login" placeholder="Login" value="{{.login}}" name="login">
+          <label for="floatingInput">Login</label>
+        </div>
+
+        <div class="form-floating">
+          <input type="password" class="form-control" id="password" placeholder="Password" name="password">
+          <label for="password">Password</label>
+        </div>
+
+        <div class="form-floating">
+          <input type="text" class="form-control" id="firstName" placeholder="FirstName" value="{{.firstName}}" name="firstName">
+          <label for="firstName">First Name</label>
+        </div>
+
+        <div class="form-floating">
+          <input type="text" class="form-control" id="lastName" placeholder="LastName" value="{{.firstName}}" name="lastName">
+          <label for="lastName">Last Name</label>
+        </div>
+
+        <div class="form-floating">
+          <input type="text" class="form-control" id="interests" placeholder="Diving, racing, etc" value="{{.interests}}" name="interests">
+          <label for="interests">Your interests</label>
+        </div>
+
+        <div class="form-floating">
+          <input type="text" class="form-control" id="city" placeholder="City" name="city" value={{.city}} >
+          <label for="city">City</label>
+        </div>
+
+        <div class="form-floating">
+           <select class="form-select" id="gender" name="gender">
+              <option value="0">Male</option>
+              <option value="1">Female</option>
+           </select>
+          <label for="gender">Gender</label>
+        </div>
+
+        <div class="form-floating">
+            <span>Or try&nbsp;</span><a href="/sign-in">SignIn</a>
+        </div>
+
+        <button class="w-100 btn btn-lg btn-primary" type="submit">Sign Up</button>
+      </form>
+    </main>
+
+     {{ template "globals/scripts.tmpl" .}}
+
+</body>
+{{ end }}

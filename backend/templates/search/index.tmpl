@@ -1,0 +1,114 @@
+{{ define "search/index.tmpl" }}
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        {{ template "globals/styles.tmpl" .}}
+        <title>Social Network</title>
+        </head>
+    <body>
+        {{ template "globals/header.tmpl" .}}
+
+
+        <div class="container">
+            <h1>Search page</h1>
+
+            <hr>
+
+            {{ range $profile := .profiles }}
+                <div class="card mb-2">
+                <div class="card-body mx-2">
+
+                <div class="mb-3 row">
+                    <label for="firstName" class="col-sm-4 col-form-label bg-secondary text-white">First Name</label>
+                    <div class="col-sm-8">
+                        <input
+                            type="text"
+                            id="firstName"
+                            readonly class="form-control-plaintext bg-light px-3"
+                            value="{{$profile.User.FirstName}}"
+                        >
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <label for="lastName" class="col-sm-4 col-form-label bg-secondary text-white">Last Name</label>
+                    <div class="col-sm-8">
+                        <input
+                            type="text"
+                            id="lastName"
+                            readonly class="form-control-plaintext bg-light px-3"
+                            value="{{$profile.User.LastName}}"
+                        >
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <label for="city" class="col-sm-4 col-form-label bg-secondary text-white">City</label>
+                    <div class="col-sm-8">
+                        <input
+                            type="text"
+                            id="city"
+                            readonly class="form-control-plaintext bg-light px-3"
+                            value="{{$profile.User.City}}"
+                        >
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <label for="isMyFriend" class="col-sm-4 col-form-label bg-secondary text-white">Is my friend</label>
+                    <div class="col-sm-8">
+                        {{ if $profile.IsFriend }}
+                            <input
+                                type="text"
+                                id="isMyFriend"
+                                readonly class="form-control-plaintext bg-light px-3"
+                                value="yes"
+                            >
+                        {{ else }}
+                            <input
+                                type="text"
+                                id="isMyFriend"
+                                readonly class="form-control-plaintext bg-light px-3"
+                                value="no"
+                            >
+                        {{ end }}
+                    </div>
+                </div>
+
+                <div class="mb-3 row">
+                    <a href="/profile/{{$profile.User.ID}}"> See full profile </a>
+                </div>
+
+                </div>
+                </div>
+
+            {{ end }}
+
+            <hr>
+
+            <nav aria-label="Page navigation example">
+              <ul class="pagination pagination-sm">
+              {{ range $p := .pages }}
+                {{ if eq $p $.page }}
+                <li class="page-item active">
+                    <a class="page-link bg-secondary border-secondary" href="{{ $.paginationUri }}{{$p}}">{{$p}}</a>
+                </li>
+                {{ else }}
+                <li class="page-item">
+                    <a class="page-link text-dark" href="{{ $.paginationUri }}{{$p}}">{{$p}}</a>
+                </li>
+                {{ end }}
+              {{ end }}
+              </ul>
+            </nav>
+        </div>
+
+
+        {{ template "globals/footer.tmpl" .}}
+        {{ template "globals/scripts.tmpl" .}}
+
+    </body>
+{{ end }}

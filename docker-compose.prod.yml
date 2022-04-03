@@ -1,0 +1,46 @@
+version: '3.8'
+
+networks:
+  social-app-net:
+    name: social-app-net
+    driver: bridge
+
+services:
+  mysqldb:
+    image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - ${MYSQL_PORT}:3306
+    expose:
+      - ${MYSQL_PORT}
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+    networks:
+      - social-app-net
+
+  backend:
+    image: backend:latest
+    build: ./backend
+    expose:
+      - ${BACKEND_INTERNAL_PORT}
+    depends_on:
+      - mysqldb
+    networks:
+      - social-app-net
+
+  haproxy:
+    image: "haproxy:2.2-alpine"
+    ports:
+      - 80:80
+      - 8888:8888
+    volumes:
+      - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
+    depends_on:
+      - mysqldb
+      - backend
+    networks:
+      - social-app-net

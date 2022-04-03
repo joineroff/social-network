@@ -1,0 +1,35 @@
+version: '3.8'
+
+networks:
+  social-app-net:
+    name: social-app-net
+    driver: bridge
+
+services:
+  mysqldb:
+    image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - ${MYSQL_PORT}:3306
+    expose:
+      - ${MYSQL_PORT}
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+    networks:
+      - social-app-net
+
+  backend:
+    image: backend:latest
+    build: ./backend
+    ports:
+      - 80:${BACKEND_INTERNAL_PORT}
+    expose:
+      - 80
+    depends_on:
+      - mysqldb
+    networks:
+      - social-app-net
