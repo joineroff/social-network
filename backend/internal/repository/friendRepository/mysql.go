@@ -34,7 +34,7 @@ func NewMysqlFriendRepository(
 // Add friendID as friend to userID
 // If already exists ignore
 func (r *mysqlFriendRepository) Add(ctx context.Context, userID, friendID string) error {
-	tx, err := r.db.Beginx()
+	tx, err := r.db.Master().Beginx()
 	if err != nil {
 		return err
 	}
@@ -43,7 +43,7 @@ func (r *mysqlFriendRepository) Add(ctx context.Context, userID, friendID string
 		_ = tx.Rollback()
 	}()
 
-	query := r.db.Rebind(stmtMysqlInsertFriend)
+	query := r.db.Master().Rebind(stmtMysqlInsertFriend)
 
 	_, err = tx.ExecContext(ctx, query, userID, friendID)
 	if err != nil {
@@ -61,7 +61,7 @@ func (r *mysqlFriendRepository) Add(ctx context.Context, userID, friendID string
 // Remove user's friend
 // If not exists ignore
 func (r *mysqlFriendRepository) Remove(ctx context.Context, userID, friendID string) error {
-	tx, err := r.db.Beginx()
+	tx, err := r.db.Master().Beginx()
 	if err != nil {
 		return err
 	}
@@ -70,7 +70,7 @@ func (r *mysqlFriendRepository) Remove(ctx context.Context, userID, friendID str
 		_ = tx.Rollback()
 	}()
 
-	query := r.db.Rebind(stmtMysqlRemoveFriend)
+	query := r.db.Master().Rebind(stmtMysqlRemoveFriend)
 
 	_, err = tx.ExecContext(ctx, query, userID, friendID)
 	if err != nil {
@@ -86,11 +86,11 @@ func (r *mysqlFriendRepository) Remove(ctx context.Context, userID, friendID str
 
 // Count user's friends
 func (r *mysqlFriendRepository) Count(ctx context.Context, userID string) (int, error) {
-	query := r.db.Rebind(stmtMysqlCountFriends)
+	query := r.db.Master().Rebind(stmtMysqlCountFriends)
 
 	var cnt int
 
-	row := r.db.QueryRowxContext(ctx, query, userID)
+	row := r.db.Master().QueryRowxContext(ctx, query, userID)
 	if err := row.Scan(&cnt); err != nil {
 		return 0, err
 	}

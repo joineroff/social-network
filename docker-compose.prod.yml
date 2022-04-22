@@ -6,22 +6,6 @@ networks:
     driver: bridge
 
 services:
-  mysqldb:
-    image: mysql:5.7
-    environment:
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-    ports:
-      - ${MYSQL_PORT}:3306
-    expose:
-      - ${MYSQL_PORT}
-    volumes:
-      - ./mysql/data:/var/lib/mysql
-    networks:
-      - social-app-net
-
   backend:
     image: backend:latest
     build: ./backend

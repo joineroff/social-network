@@ -55,6 +55,9 @@ restart: stop start
 logs-%:
 	@${LOGS} $*
 
+console-%:
+	@${COMPOSE} exec $* sh
+
 status:
 	@echo "-----------------------\n"
 	@$(COMPOSE) ps
