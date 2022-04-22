@@ -61,8 +61,8 @@ const stmtMysqlCountProfiles = `
 
 const (
 	stmtMysqlShouldBeFriendCondition = ` AND (uf.user_id IS NOT NULL)`
-	stmtMysqlNameLikeCondition       = ` AND (u.first_name LIKE ? OR u.last_name LIKE ?)`
-	stmtMysqlLimitOffset             = ` LIMIT ? OFFSET ?`
+	stmtMysqlNameLikeCondition       = ` AND (u.first_name LIKE ? AND u.last_name LIKE ?)`
+	stmtMysqlLimitOffset             = ` ORDER BY u.id ASC LIMIT ? OFFSET ? `
 
 	mysqlMaxArgs = 6
 )

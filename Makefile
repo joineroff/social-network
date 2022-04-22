@@ -2,6 +2,7 @@ include .env
 export $(shell sed 's/=.*//' .env)
 
 COMPOSE = docker-compose -f docker-compose.${ENV}.yml
+LOGS= docker-compose -f docker-compose.${ENV}.yml logs -f --tail=100
 
 .PHONY:mysql-migrate-up
 mysql-migrate-up:
@@ -50,6 +51,9 @@ rebuild-backend:
 	@$(COMPOSE) build --no-cache backend
 
 restart: stop start
+
+logs-%:
+	@${LOGS} $*
 
 status:
 	@echo "-----------------------\n"
