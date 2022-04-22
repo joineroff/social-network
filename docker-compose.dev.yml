@@ -18,6 +18,7 @@ services:
     expose:
       - ${MYSQL_PORT}
     volumes:
+      - ./mysql/dump:/root/dump
       - ./mysql/data:/var/lib/mysql
     networks:
       - social-app-net

@@ -61,8 +61,8 @@ const stmtMysqlCountProfiles = `
 
 const (
 	stmtMysqlShouldBeFriendCondition = ` AND (uf.user_id IS NOT NULL)`
-	stmtMysqlNameLikeCondition       = ` AND (u.first_name LIKE ? OR u.last_name LIKE ?)`
-	stmtMysqlLimitOffset             = ` LIMIT ? OFFSET ?`
+	stmtMysqlNameLikeCondition       = ` AND (u.first_name LIKE ? AND u.last_name LIKE ?)`
+	stmtMysqlLimitOffset             = ` ORDER BY u.id ASC LIMIT ? OFFSET ? `
 
 	mysqlMaxArgs = 6
 )
@@ -106,12 +106,12 @@ func (r *mysqlProfileRepository) CountProfiles(
 		q.WriteString(stmtMysqlShouldBeFriendCondition)
 	}
 
-	query := r.db.Rebind(q.String())
+	query := r.db.Slave().Rebind(q.String())
 	q.Reset()
 
 	var cnt int
 
-	row := r.db.QueryRowxContext(ctx, query, args...)
+	row := r.db.Slave().QueryRowxContext(ctx, query, args...)
 	if err := row.Scan(&cnt); err != nil {
 		return 0, err
 	}
@@ -125,12 +125,12 @@ func (r *mysqlProfileRepository) GetProfile(
 	id string,
 	currentUserID string,
 ) (*entity.Profile, error) {
-	query := r.db.Rebind(stmtMysqlGetProfile)
+	query := r.db.Slave().Rebind(stmtMysqlGetProfile)
 
 	profile := &entity.Profile{}
 	profile.User = &entity.User{}
 
-	row := r.db.QueryRowxContext(ctx, query, currentUserID, id)
+	row := r.db.Slave().QueryRowxContext(ctx, query, currentUserID, id)
 
 	var (
 		firstName sql.NullString
@@ -214,10 +214,10 @@ func (r *mysqlProfileRepository) FindProfiles(
 
 	args = append(args, limit, offset)
 
-	query := r.db.Rebind(q.String())
+	query := r.db.Slave().Rebind(q.String())
 	q.Reset()
 
-	rows, err := r.db.QueryxContext(ctx, query, args...)
+	rows, err := r.db.Slave().QueryxContext(ctx, query, args...)
 	if err != nil {
 		return nil, err
 	}

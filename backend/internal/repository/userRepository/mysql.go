@@ -91,9 +91,9 @@ func NewMysqlUserRepository(
 }
 
 func (r *MysqlUserRepository) FindByID(ctx context.Context, id string) (*entity.User, error) {
-	query := r.db.Rebind(stmtMysqlFindUserByID)
+	query := r.db.Master().Rebind(stmtMysqlFindUserByID)
 
-	row := r.db.QueryRowxContext(ctx, query, id)
+	row := r.db.Master().QueryRowxContext(ctx, query, id)
 
 	user, err := r.scanUserRow(row)
 	if err != nil {
@@ -108,9 +108,9 @@ func (r *MysqlUserRepository) FindByID(ctx context.Context, id string) (*entity.
 }
 
 func (r *MysqlUserRepository) FindByLogin(ctx context.Context, login string) (*entity.User, error) {
-	query := r.db.Rebind(stmtMysqlFindUserByLogin)
+	query := r.db.Master().Rebind(stmtMysqlFindUserByLogin)
 
-	row := r.db.QueryRowxContext(ctx, query, login)
+	row := r.db.Master().QueryRowxContext(ctx, query, login)
 
 	user, err := r.scanUserRow(row)
 	if err != nil {
@@ -125,9 +125,9 @@ func (r *MysqlUserRepository) FindByLogin(ctx context.Context, login string) (*e
 }
 
 func (r *MysqlUserRepository) FindAll(ctx context.Context, limit, offset int) ([]*entity.User, error) {
-	query := r.db.Rebind(stmtMysqlFindAllUsers)
+	query := r.db.Master().Rebind(stmtMysqlFindAllUsers)
 
-	rows, err := r.db.QueryxContext(ctx, query, limit, offset)
+	rows, err := r.db.Master().QueryxContext(ctx, query, limit, offset)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
@@ -149,7 +149,7 @@ func (r *MysqlUserRepository) FindAll(ctx context.Context, limit, offset int) ([
 func (r *MysqlUserRepository) Count(ctx context.Context) (int, error) {
 	var cnt int
 
-	row := r.db.QueryRowxContext(ctx, stmtMysqlCountUsers)
+	row := r.db.Master().QueryRowxContext(ctx, stmtMysqlCountUsers)
 	if err := row.Scan(&cnt); err != nil {
 		return 0, err
 	}
@@ -158,7 +158,7 @@ func (r *MysqlUserRepository) Count(ctx context.Context) (int, error) {
 }
 
 func (r *MysqlUserRepository) Create(ctx context.Context, model *entity.User) (*entity.User, error) {
-	tx, err := r.db.Beginx()
+	tx, err := r.db.Master().Beginx()
 	if err != nil {
 		return nil, err
 	}
@@ -167,7 +167,7 @@ func (r *MysqlUserRepository) Create(ctx context.Context, model *entity.User) (*
 		_ = tx.Rollback()
 	}()
 
-	query := r.db.Rebind(stmtMysqlInsertUser)
+	query := r.db.Master().Rebind(stmtMysqlInsertUser)
 
 	interests := strings.Join(model.Interests, ",")
 
@@ -205,7 +205,7 @@ func (r *MysqlUserRepository) Update(ctx context.Context, model *entity.User) (*
 }
 
 func (r *MysqlUserRepository) Delete(ctx context.Context, model *entity.User) error {
-	tx, err := r.db.Beginx()
+	tx, err := r.db.Master().Beginx()
 	if err != nil {
 		return err
 	}
@@ -214,7 +214,7 @@ func (r *MysqlUserRepository) Delete(ctx context.Context, model *entity.User) er
 		_ = tx.Rollback()
 	}()
 
-	query := r.db.Rebind(stmtMysqlDeleteUser)
+	query := r.db.Master().Rebind(stmtMysqlDeleteUser)
 
 	if _, err := tx.ExecContext(
 		ctx,

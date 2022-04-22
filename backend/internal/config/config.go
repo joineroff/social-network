@@ -28,11 +28,14 @@ type MysqlConfig struct {
 }
 
 type Config struct {
-	Debug   bool        `yaml:"debug"`
-	AppName string      `yaml:"app_name"`
-	Auth    AuthConfig  `yaml:"auth"`
-	Http    HttpConfig  `yaml:"http"`
-	Mysql   MysqlConfig `yaml:"mysql"`
+	Debug   bool       `yaml:"debug"`
+	AppName string     `yaml:"app_name"`
+	Auth    AuthConfig `yaml:"auth"`
+	Http    HttpConfig `yaml:"http"`
+	Mysql   struct {
+		Master MysqlConfig   `yaml:"master"`
+		Slaves []MysqlConfig `yaml:"slaves"`
+	} `yaml:"mysql"`
 }
 
 func NewConfig(path string) *Config {

@@ -7,11 +7,23 @@ http:
   domain:
 
 mysql:
-  host: dbhost
-  port: 3306
-  user: dbuser
-  password: dbpass
-  database: appdb
+  master:
+    host: mysqldb
+    port: 3306
+    user: appuser
+    password: pass
+    database: appdb
+  slaves:
+    - host: mysqldb
+      port: 3306
+      user: appuser
+      password: pass
+      database: appdb
+    - host: mysqldb
+      port: 3306
+      user: appuser
+      password: pass
+      database: appdb
 
 auth:
   token-secret: my-app-secret
