@@ -1,0 +1,6 @@
+master/data
+master/dump
+slave1/data
+slave1/dump
+slave2/data
+slave2/dump

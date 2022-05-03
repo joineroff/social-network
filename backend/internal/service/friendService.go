@@ -6,6 +6,8 @@ import (
 	"github.com/joineroff/social-network/backend/internal/repository"
 )
 
+var _ FriendService = &friendService{}
+
 type FriendService interface {
 	CountFriends(ctx context.Context, userID string) (int, error)
 	AddFriend(ctx context.Context, userID string, friendID string) error
@@ -18,7 +20,7 @@ type friendService struct {
 
 func NewFriendService(
 	friendRepository repository.FriendRepository,
-) FriendService {
+) *friendService {
 	return &friendService{
 		friendRepository: friendRepository,
 	}

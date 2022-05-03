@@ -20,11 +20,11 @@ const (
 type MysqlDBOption func(*sqlx.DB)
 
 type MysqlDB struct {
-	mu        sync.Mutex
-	master    *sqlx.DB
-	slaves    []*sqlx.DB
-	nextSlave int
-	lastSlave int
+	mu               sync.Mutex
+	master           *sqlx.DB
+	replicas         []*sqlx.DB
+	nextReplicaIndex int
+	lastReplicaIndex int
 }
 
 func (db *MysqlDB) Master() *sqlx.DB {
@@ -33,66 +33,83 @@ func (db *MysqlDB) Master() *sqlx.DB {
 
 func (db *MysqlDB) Slave() *sqlx.DB {
 	db.mu.Lock()
-	curSlave := db.nextSlave
+	curReplicaIndex := db.nextReplicaIndex
 
-	db.nextSlave++
+	db.nextReplicaIndex++
 
-	if db.nextSlave > db.lastSlave {
-		db.nextSlave = 0
+	if db.nextReplicaIndex > db.lastReplicaIndex {
+		db.nextReplicaIndex = 0
 	}
 	db.mu.Unlock()
 
-	return db.slaves[curSlave]
+	return db.replicas[curReplicaIndex]
 }
 
 func (db *MysqlDB) Close() error {
-	for _, slave := range db.slaves {
-		if err := slave.Close(); err != nil {
-			return err
-		}
-	}
-
 	if err := db.master.Close(); err != nil {
 		return err
+	}
+
+	for _, replica := range db.replicas {
+		if err := replica.Close(); err != nil {
+			return err
+		}
 	}
 
 	return nil
 }
 
 func NewMsSQLDatabase(cfg *config.Config, opts ...MysqlDBOption) *MysqlDB {
-	masterDB := newConnection(cfg.Mysql.Master, opts...)
-	slaveDBs := make([]*sqlx.DB, 0, 1)
+	masterConn := newConnection(
+		cfg.Infrastructure.Mysql.Address,
+		cfg.Infrastructure.Mysql.User,
+		cfg.Infrastructure.Mysql.Password,
+		cfg.Infrastructure.Mysql.Database,
+		opts...,
+	)
+	replicas := make([]*sqlx.DB, 0, 1)
 
-	for _, slave := range cfg.Mysql.Slaves {
-		slaveDB := newConnection(slave, opts...)
+	for _, replicaAddress := range cfg.Infrastructure.Mysql.Replicas {
+		replicaConn := newConnection(
+			replicaAddress,
+			cfg.Infrastructure.Mysql.User,
+			cfg.Infrastructure.Mysql.Password,
+			cfg.Infrastructure.Mysql.Database,
+			opts...,
+		)
 
-		slaveDBs = append(slaveDBs, slaveDB)
+		replicas = append(replicas, replicaConn)
 	}
 
-	if len(slaveDBs) == 0 {
-		slaveDBs = append(slaveDBs, masterDB)
+	if len(replicas) == 0 {
+		replicas = append(replicas, masterConn)
 	}
 
 	return &MysqlDB{
-		master:    masterDB,
-		slaves:    slaveDBs,
-		lastSlave: len(slaveDBs) - 1,
+		master:           masterConn,
+		replicas:         replicas,
+		lastReplicaIndex: len(replicas) - 1,
 	}
 }
 
-func newConnection(cfg config.MysqlConfig, opts ...MysqlDBOption) *sqlx.DB {
+func newConnection(
+	address string,
+	user string,
+	password string,
+	database string,
+	opts ...MysqlDBOption,
+) *sqlx.DB {
 	conStr := fmt.Sprintf(
-		"%s:%s@(%s:%s)/%s",
-		cfg.User,
-		cfg.Password,
-		cfg.Host,
-		cfg.Port,
-		cfg.Database,
+		"%s:%s@(%s)/%s",
+		user,
+		password,
+		address,
+		database,
 	)
 
 	db, err := sqlx.Open("mysql", conStr)
 	if err != nil {
-		log.Fatalf("failed to connect to %s:%s db: %v", cfg.Host, cfg.Port, err)
+		log.Fatalf("failed to connect to %s db: %v", address, err)
 	}
 
 	db.SetMaxIdleConns(defaultMaxIdleConnections)
@@ -104,7 +121,7 @@ func newConnection(cfg config.MysqlConfig, opts ...MysqlDBOption) *sqlx.DB {
 	}
 
 	if err := db.Ping(); err != nil {
-		log.Fatalf("failed to ping to %s:%s db: %v", cfg.Host, cfg.Port, err)
+		log.Fatalf("failed to ping to %s db: %v", address, err)
 	}
 
 	return db

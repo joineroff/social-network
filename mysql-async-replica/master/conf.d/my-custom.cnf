@@ -1,0 +1,10 @@
+[mysqld]
+
+skip-host-cache
+skip-name-resolve
+max-connections=50
+
+server-id = 1
+log_bin = /var/log/mysql/mysql-bin.log
+binlog_format = STATEMENT
+binlog_do_db = appdb

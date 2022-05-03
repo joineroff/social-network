@@ -20,22 +20,21 @@ type HttpConfig struct {
 }
 
 type MysqlConfig struct {
-	Host     string `yaml:"host"`
-	Port     string `yaml:"port"`
-	User     string `yaml:"user"`
-	Password string `yaml:"password"`
-	Database string `yaml:"database"`
+	Address  string   `yaml:"address"`
+	User     string   `yaml:"user"`
+	Password string   `yaml:"password"`
+	Database string   `yaml:"database"`
+	Replicas []string `yaml:"replicas"`
 }
 
 type Config struct {
-	Debug   bool       `yaml:"debug"`
-	AppName string     `yaml:"app_name"`
-	Auth    AuthConfig `yaml:"auth"`
-	Http    HttpConfig `yaml:"http"`
-	Mysql   struct {
-		Master MysqlConfig   `yaml:"master"`
-		Slaves []MysqlConfig `yaml:"slaves"`
-	} `yaml:"mysql"`
+	Debug          bool       `yaml:"debug"`
+	AppName        string     `yaml:"app_name"`
+	Auth           AuthConfig `yaml:"auth"`
+	Http           HttpConfig `yaml:"http"`
+	Infrastructure struct {
+		Mysql MysqlConfig `yaml:"mysql"`
+	} `yaml:"infrastructure"`
 }
 
 func NewConfig(path string) *Config {

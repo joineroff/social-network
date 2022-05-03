@@ -7,6 +7,8 @@ import (
 	"github.com/joineroff/social-network/backend/internal/repository"
 )
 
+var _ ProfileService = &profileService{}
+
 type ProfileService interface {
 	// FindProfiles ...
 	GetProfile(
@@ -55,7 +57,7 @@ type profileService struct {
 
 func NewProfileService(
 	profileRepository repository.ProfileRepository,
-) ProfileService {
+) *profileService {
 	return &profileService{
 		profileRepository: profileRepository,
 	}

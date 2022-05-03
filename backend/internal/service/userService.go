@@ -8,6 +8,8 @@ import (
 	"github.com/joineroff/social-network/backend/internal/repository"
 )
 
+var _ UserService = &userService{}
+
 var (
 	ErrUserNotFound     = errors.New("user not found")
 	ErrUserAlreadyExist = errors.New("user already exists")
@@ -34,7 +36,7 @@ type userService struct {
 
 func NewUserService(
 	userRepository repository.UserRepository,
-) UserService {
+) *userService {
 	return &userService{
 		userRepository: userRepository,
 	}

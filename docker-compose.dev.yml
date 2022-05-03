@@ -6,7 +6,7 @@ networks:
     driver: bridge
 
 services:
-  mysqldb:
+  mysqlmaster:
     image: mysql:5.7
     environment:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
@@ -14,9 +14,9 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     ports:
-      - ${MYSQL_PORT}:3306
+      - 3306:3306
     expose:
-      - ${MYSQL_PORT}
+      - 3306
     volumes:
       - ./mysql/dump:/root/dump
       - ./mysql/data:/var/lib/mysql

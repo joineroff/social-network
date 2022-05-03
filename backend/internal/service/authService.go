@@ -12,6 +12,8 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+var _ AuthService = &authService{}
+
 var (
 	ErrAuthAlreadyExist       = errors.New("already exist")
 	ErrAuthInvalidCredentials = errors.New("invalid credentials")
@@ -48,7 +50,7 @@ type authService struct {
 	secret []byte
 }
 
-func NewAuthService(cfg *config.Config) AuthService {
+func NewAuthService(cfg *config.Config) *authService {
 	return &authService{
 		secret: []byte(cfg.Auth.Secret),
 	}

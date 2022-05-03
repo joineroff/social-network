@@ -20,7 +20,5 @@ vendor/
 
 .env
 
-trace*
-
 *.__local*
 mysql/data

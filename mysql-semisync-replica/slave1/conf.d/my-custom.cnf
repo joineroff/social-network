@@ -1,0 +1,24 @@
+[mysqld]
+
+skip-host-cache
+skip-name-resolve
+max-connections=50
+
+server-id = 2
+log_bin = /var/log/mysql/mysql-bin.log
+relay-log = /var/log/mysql/mysql-relay-bin.log
+
+# Включаем GTID
+gtid_mode=ON
+enforce-gtid-consistency
+
+# Включаем ROW based replica
+binlog_format = ROW
+
+binlog_do_db = appdb
+binlog_do_db = testdb
+
+# Включаем semisync replica
+plugin-load-add=rpl_semi_sync_master=semisync_master.so
+plugin-load-add=rpl_semi_sync_slave=semisync_slave.so
+rpl_semi_sync_slave_enabled = 1
